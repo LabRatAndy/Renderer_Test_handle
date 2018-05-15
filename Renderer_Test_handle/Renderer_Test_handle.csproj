@@ -52,12 +52,6 @@
     <Compile Include="RenderWindow.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Renderer\Renderer.csproj">
-      <Project>{ecf8af19-b56b-415f-ac7c-4518200deaec}</Project>
-      <Name>Renderer</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Background.vert" />
     <None Include="BackgroundNoFog.frag" />
     <None Include="BackgroundFog.frag" />
@@ -67,6 +61,12 @@
     <None Include="test2.vert">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Renderer\Renderer.csproj">
+      <Project>{ecf8af19-b56b-415f-ac7c-4518200deaec}</Project>
+      <Name>Renderer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

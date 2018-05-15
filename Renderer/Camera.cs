@@ -18,7 +18,7 @@ namespace Renderer
         CameraPanLeft,
         CameraPanRight,
         CameraTiltUp,
-        CameraTiltDown
+        CameraTiltDown,
     }
     /// <summary>
     /// class to abstract camera functions
@@ -185,7 +185,7 @@ namespace Renderer
             return degrees * (System.Math.PI / 180);
         }
     }
-    public class newCamera
+  /*  public class newCamera
     {
         private Vector3 position;
         private Vector3 lookDirection;
@@ -279,10 +279,10 @@ namespace Renderer
         {
 
         }
-        private static Vector3 Rotate(this Vector3 input, Vector3 rotationAxis, float rotationAngle)
+        private Vector3 Rotate(this Vector3 input, Vector3 rotationAxis, float rotationAngle)
         {
             Quaternion rotation = Quaternion.FromAxisAngle(rotationAxis, rotationAngle);
             return Vector3.Transform(input, rotation);
         }
-    }
+    }*/
 }
