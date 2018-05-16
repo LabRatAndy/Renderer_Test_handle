@@ -1,2 +1,0 @@
-Created material class, created more uniform classes, added background rendering
-routines to renderer class.
