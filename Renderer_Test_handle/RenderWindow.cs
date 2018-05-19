@@ -145,6 +145,7 @@ namespace Program
         }
         protected override void OnRenderFrame(FrameEventArgs e)
         {
+            OpenTK.Graphics.OpenGL.GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.DepthBufferBit | OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
             //add renerer calls to draw the objects
             renderer.BackgroundData = this.backgroundData;
             renderer.RenderBackGround();
