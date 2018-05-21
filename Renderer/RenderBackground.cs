@@ -335,5 +335,65 @@ namespace Renderer
             BGSideWallebo.Unbind();
             BGCapsebo.Unbind();
         }
+        /// <summary>
+        /// creates the skybox vertices vbo vao etc
+        /// </summary>
+        private void CreateSkyBox()
+        {
+            Vertex[] vertices = new Vertex[36];
+            #region
+            vertices[0] = new Vertex(new Vector3(-10.0f, 10.0f, -10.0f));
+            vertices[1] = new Vertex(new Vector3(-10.0f, -10.0f, -10.0f));
+            vertices[2] = new Vertex(new Vector3(10.0f, -10.0f, -10.0f));
+            vertices[3] = new Vertex(new Vector3(10.0f, -10.0f, -10.0f));
+            vertices[4] = new Vertex(new Vector3(10.0f, 10.0f, -10.0f));
+            vertices[5] = new Vertex(new Vector3(-10.0f, 10.0f, -10.0f));
+
+            vertices[6] = new Vertex(new Vector3(-10.0f, -10.0f, 10.0f));
+            vertices[7] = new Vertex(new Vector3(-10.0f, -10.0f, -10.0f));
+            vertices[8] = new Vertex(new Vector3(-10.0f, 10.0f, -10.0f));
+            vertices[9] = new Vertex(new Vector3(-10.0f, 10.0f, -10.0f));
+            vertices[10] = new Vertex(new Vector3(-10.0f, 10.0f, 10.0f));
+            vertices[11] = new Vertex(new Vector3(-10.0f, -10.0f, 10.0f));
+
+            vertices[12] = new Vertex(new Vector3(10.0f, -10.0f, -10.0f));
+            vertices[13] = new Vertex(new Vector3(10.0f, -10.0f, 10.0f));
+            vertices[14] = new Vertex(new Vector3(10.0f, 10.0f, 10.0f));
+            vertices[15] = new Vertex(new Vector3(10.0f, 10.0f, 10.0f));
+            vertices[16] = new Vertex(new Vector3(10.0f, 10.0f, -10.0f));
+            vertices[17] = new Vertex(new Vector3(10.0f, -10.0f, -10.0f));
+
+            vertices[18] = new Vertex(new Vector3(-10.0f, -10.0f, 10.0f));
+            vertices[19] = new Vertex(new Vector3(-10.0f, 10.0f, 10.0f));
+            vertices[20] = new Vertex(new Vector3(10.0f, 10.0f, 10.0f));
+            vertices[21] = new Vertex(new Vector3(10.0f, 10.0f, 10.0f));
+            vertices[22] = new Vertex(new Vector3(10.0f, -10.0f, 10.0f));
+            vertices[23] = new Vertex(new Vector3(-10.0f, -10.0f, 10.0f));
+
+            vertices[24] = new Vertex(new Vector3(-10.0f, 10.0f, -10.0f));
+            vertices[25] = new Vertex(new Vector3(10.0f, 10.0f, -10.0f));
+            vertices[26] = new Vertex(new Vector3(10.0f, 10.0f, 10.0f));
+            vertices[27] = new Vertex(new Vector3(10.0f, 10.0f, 10.0f));
+            vertices[28] = new Vertex(new Vector3(-10.0f, 10.0f, 10.0f));
+            vertices[29] = new Vertex(new Vector3(-10.0f, 10.0f, -10.0f));
+
+            vertices[30] = new Vertex(new Vector3(-10.0f, -10.0f, -10.0f));
+            vertices[31] = new Vertex(new Vector3(-10.0f, -10.0f, 10.0f));
+            vertices[32] = new Vertex(new Vector3(10.0f, -10.0f, -10.0f));
+            vertices[33] = new Vertex(new Vector3(10.0f, -10.0f, -10.0f));
+            vertices[34] = new Vertex(new Vector3(-10.0f, -10.0f, 10.0f));
+            vertices[35] = new Vertex(new Vector3(10.0f, -10.0f, 10.0f));
+            #endregion
+            BufferObjects.VertexAttribute[] attribute = new VertexAttribute[3];
+            attribute[0] = new VertexAttribute("position", 3, OpenTK.Graphics.OpenGL.VertexAttribPointerType.Float, Vertex.Size, 0);
+            attribute[1] = new VertexAttribute("normal", 3, OpenTK.Graphics.OpenGL.VertexAttribPointerType.Float, Vertex.Size, Vector3.SizeInBytes);
+            attribute[2] = new VertexAttribute("texcoord", 2, VertexAttribPointerType.Float, Vertex.Size, Vector2.SizeInBytes);
+            BGvao = new VertexArrayObject<Vertex>();
+            BGvbo = new VertexBufferObject<Vertex>(Vertex.Size, vertices);
+            BGvbo.CreateBuffer(BufferUsageHint.StaticDraw);
+            BGvao.SetAttributes(BGvbo, shaderMgr.GetShader("SkyBox"), attribute);
+            BGvao.UnBind();
+            BGvbo.UnBind();
+        }
     }
 }
