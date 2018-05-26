@@ -95,37 +95,19 @@ namespace Renderer
         }
         public void RenderBackGround()
         {
-            //create the cylinder if needed
-            if (BGvbo == null) CreateBackgroundCone();
-            if (depthteston)
+            if (BGvbo == null) CreateSkyBox();
+            if(depthteston)
             {
                 GL.Disable(EnableCap.DepthTest);
-                depthteston = false;
             }
-            Shader shader = null;
-            if(BGData.FogStart<BGData.FogEnd & BGData.FogStart < 600.0f)
-            {
-                shaderMgr.InitialiseAShader("BackgroundFog");
-                shader = shaderMgr.GetShader("BackgroundFog");
-                BackgroundFog(shader);
-            }
-            else
-            {
-                shaderMgr.InitialiseAShader("BackgroundNoFog");
-                shader = shaderMgr.GetShader("BackgroundNoFog");
-            }
+            Shader shader = shaderMgr.GetShader(BGData.BackgroundShaderIndex);
+            shader.InitialiseShader();
             shader.Use();
-            textureMgr.GetTexture(BGData.BackgroundTextureIndex).ActivateTexture(TextureUnit.Texture0, shader, "background", 0);
+            textureMgr.GetTexture(BGData.BackgroundTextureIndex).BindaAsCubeMap();
             BGvao.Bind();
             BGvbo.BindBuffer();
-            BGSideWallebo.Bind();
-            BGCapsebo.Bind();
-            BGSideWallebo.Draw(PrimitiveType.Quads);
-            BGCapsebo.Draw(PrimitiveType.Triangles);
-            BGvao.UnBind();
-            BGvbo.UnBind();
-            BGSideWallebo.Unbind();
-            BGCapsebo.Unbind();
+            BGvbo.Draw(PrimitiveType.Triangles);
+
         }
         private void BackgroundFog(Shader shader)
         {

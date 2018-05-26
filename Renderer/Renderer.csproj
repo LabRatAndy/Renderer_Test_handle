@@ -54,6 +54,7 @@
     <Compile Include="Matrix4Uniform.cs" />
     <Compile Include="RenderBackground.cs" />
     <Compile Include="Renderer.cs" />
+    <Compile Include="RendererEnums.cs" />
     <Compile Include="RendererOptions.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
