@@ -115,7 +115,7 @@ namespace Renderer
             BGvao.Bind();
             BGvbo.BindBuffer();
             BGvbo.Draw(PrimitiveType.Triangles);
-
+            GL.Enable(EnableCap.DepthTest);
         }
         private void BackgroundFog(Shader shader)
         {
