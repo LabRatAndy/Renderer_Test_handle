@@ -36,11 +36,8 @@ namespace Renderer
         }
         public void BindTexture()
         {
-            GL.BindTexture(TextureTarget.Texture2D, handle);
-        }
-        public void BindaAsCubeMap()
-        {
-            GL.BindTexture(TextureTarget.TextureCubeMap, handle);
+            if (cubemap == true) GL.BindTexture(TextureTarget.TextureCubeMap, handle);
+            else GL.BindTexture(TextureTarget.Texture2D, handle);
         }
         public void ActivateTexture(TextureUnit unit,Shader shader,string samplername,int samplerindex)
         {
@@ -50,7 +47,8 @@ namespace Renderer
         }
         public void UnbindTexture()
         {
-            GL.BindTexture(TextureTarget.Texture2D, 0);
+            if (cubemap != true) GL.BindTexture(TextureTarget.Texture2D, 0);
+            else GL.BindTexture(TextureTarget.TextureCubeMap, 0);
         }
         public void LoadCubeMapSide(Bitmap immage, TextureTarget side)
         {

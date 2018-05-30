@@ -103,7 +103,15 @@ namespace Renderer
             Shader shader = shaderMgr.GetShader(BGData.BackgroundShaderIndex);
             shader.InitialiseShader();
             shader.Use();
-            textureMgr.GetTexture(BGData.BackgroundTextureIndex).BindaAsCubeMap();
+            Uniform.Matrix4Uniform view = new Uniform.Matrix4Uniform("view");
+            Uniform.Matrix4Uniform projection = new Uniform.Matrix4Uniform("projection");
+            view.Matrix = cameraMgr.GetActiveCamera().GetVeiwMatrix();
+            projection.Matrix = GetProjectionMatrix();
+            view.Set(shader);
+            projection.Set(shader);
+            GL.ActiveTexture(TextureUnit.Texture0);
+            textureMgr.GetTexture(BGData.BackgroundTextureIndex).BindTexture();
+            textureMgr.GetTexture(BGData.BackgroundTextureIndex).ActivateTexture(TextureUnit.Texture0, shader, "skyboxtexture", 0);
             BGvao.Bind();
             BGvbo.BindBuffer();
             BGvbo.Draw(PrimitiveType.Triangles);
