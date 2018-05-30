@@ -88,19 +88,9 @@ namespace Program
                 this.Exit();
                 return;
             }
-            vertex = System.IO.Directory.GetCurrentDirectory() + @"\Background.vert";
-            fragment = System.IO.Directory.GetCurrentDirectory() + @"\BackgroundNoFog.frag";
-            shaderindex = renderer.AddShader(vertex, fragment, "BackgroundNoFog", true);
-            if (shaderindex == -1)
-            {
-                //shader compile error
-                MessageBox.Show("Error loading shader. Program will Close", "Load Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Exit();
-                return;
-            }
-            vertex = System.IO.Directory.GetCurrentDirectory() + @"\Background.vert";
-            fragment = System.IO.Directory.GetCurrentDirectory() + @"\BackgroundFog.frag";
-            shaderindex = renderer.AddShader(vertex, fragment, "BackgroundFog", true);
+            vertex = System.IO.Directory.GetCurrentDirectory() + @"\SkyBox.vert";
+            fragment = System.IO.Directory.GetCurrentDirectory() + @"\SkyBox.frag";
+            shaderindex = renderer.AddShader(vertex, fragment, "SkyBox", true);
             if (shaderindex == -1)
             {
                 //shader compile error
@@ -131,6 +121,7 @@ namespace Program
             backgroundData.FogRed = 155;
             backgroundData.FogGreen = 155;
             backgroundData.FogBlue = 155;
+            backgroundData.BackgroundShaderIndex = shaderindex;
         }
         protected override void OnResize(EventArgs e)
         {
@@ -145,7 +136,6 @@ namespace Program
         }
         protected override void OnRenderFrame(FrameEventArgs e)
         {
-            OpenTK.Graphics.OpenGL.GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.DepthBufferBit | OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
             //add renerer calls to draw the objects
             renderer.BackgroundData = this.backgroundData;
             renderer.RenderBackGround();
