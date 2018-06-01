@@ -101,7 +101,7 @@ namespace Renderer
                 GL.Disable(EnableCap.DepthTest);
             }
             Shader shader = shaderMgr.GetShader(BGData.BackgroundShaderIndex);
-            shader.InitialiseShader();
+            if (shader == null) throw new Exception("background shader not initalised");
             shader.Use();
             Uniform.Matrix4Uniform view = new Uniform.Matrix4Uniform("view");
             Uniform.Matrix4Uniform projection = new Uniform.Matrix4Uniform("projection");
@@ -116,6 +116,7 @@ namespace Renderer
             BGvbo.BindBuffer();
             BGvbo.Draw(PrimitiveType.Triangles);
             GL.Enable(EnableCap.DepthTest);
+            depthteston = true;
         }
         private void BackgroundFog(Shader shader)
         {
