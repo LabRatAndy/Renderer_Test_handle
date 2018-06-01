@@ -109,8 +109,15 @@ namespace Program
             renderer.CreateBufferObjects(vertices, shaderindex, out testItem, out testvao, attribute);
             string textureFile = System.IO.Directory.GetCurrentDirectory() + @"\brick2.png";
             textureIndex = renderer.AddTexture(textureFile, "texture1");
-            textureFile = System.IO.Directory.GetCurrentDirectory() + @"\background.png";    
-            backgroundData.BackgroundTextureIndex = renderer.AddTexture(textureFile, "background");
+            textureFile = System.IO.Directory.GetCurrentDirectory() + @"\background.png";
+            textureIndex = renderer.CreateSkyBox("background");
+            renderer.AddSkyBoxTexture(Renderer.SkyBoxTextureSide.Back, textureFile, textureIndex);
+            renderer.AddSkyBoxTexture(Renderer.SkyBoxTextureSide.Bottom, textureFile, textureIndex);
+            renderer.AddSkyBoxTexture(Renderer.SkyBoxTextureSide.Front, textureFile, textureIndex);
+            renderer.AddSkyBoxTexture(Renderer.SkyBoxTextureSide.Left, textureFile, textureIndex);
+            renderer.AddSkyBoxTexture(Renderer.SkyBoxTextureSide.Right, textureFile, textureIndex);
+            renderer.AddSkyBoxTexture(Renderer.SkyBoxTextureSide.Top, textureFile, textureIndex);
+            backgroundData.BackgroundTextureIndex = textureIndex;
             backgroundData.ImageHeight = 512;
             backgroundData.ImageWidth = 1024;
             backgroundData.KeepAspectRatio = true;
