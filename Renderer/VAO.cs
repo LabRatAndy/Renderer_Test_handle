@@ -23,9 +23,11 @@ namespace Renderer.BufferObjects
         internal void Bind()
         {
             GL.BindVertexArray(handle);
+            GL.EnableVertexAttribArray(handle);
         }
         internal void UnBind()
         {
+            GL.DisableVertexAttribArray(handle);
             GL.BindVertexArray(0);
         }
     }
