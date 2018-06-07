@@ -115,6 +115,8 @@ namespace Renderer
             BGvao.Bind();
             BGvbo.BindBuffer();
             BGvbo.Draw(PrimitiveType.Triangles);
+            BGvbo.UnBind();
+            BGvao.UnBind();
             GL.Enable(EnableCap.DepthTest);
             depthteston = true;
         }
