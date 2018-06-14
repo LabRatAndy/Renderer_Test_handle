@@ -27,9 +27,8 @@ namespace Renderer
         {
             GL.GenTextures(1, out handle);
             GL.BindTexture(TextureTarget.Texture2D, handle);
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0,
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0,
                 OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, LoadTexture(image));
-            image.UnlockBits(data);
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
             GL.BindTexture(TextureTarget.Texture2D, 0);
         }
@@ -56,8 +55,7 @@ namespace Renderer
                 side == TextureTarget.TextureCubeMapPositiveX | side == TextureTarget.TextureCubeMapPositiveY | side == TextureTarget.TextureCubeMapPositiveZ)
             {
                 GL.BindTexture(TextureTarget.TextureCubeMap, handle);
-                GL.TexImage2D(side, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, LoadTexture(immage));
-                immage.UnlockBits(data);
+                GL.TexImage2D(side, 0, PixelInternalFormat.Rgba, immage.Width, immage.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, LoadTexture(immage));
             }
             else throw new Exception("Side is not a valid texture target enum for a cube map");
             GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, new int[] { (int)TextureMagFilter.Linear });
