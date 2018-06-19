@@ -145,7 +145,8 @@ namespace Program
         {
             //add renerer calls to draw the objects
             renderer.BackgroundData = this.backgroundData;
-           OpenTK.Graphics.OpenGL.GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit|OpenTK.Graphics.OpenGL.ClearBufferMask.DepthBufferBit);
+            OpenTK.Graphics.OpenGL.GL.ClearColor(Color.White);
+            OpenTK.Graphics.OpenGL.GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit|OpenTK.Graphics.OpenGL.ClearBufferMask.DepthBufferBit);
             renderer.RenderBackGround();
             //renderer.RenderObject(testItem, testvao, shaderindex, Matrix4.Identity,textureIndex);
             //renderer.RenderObject();

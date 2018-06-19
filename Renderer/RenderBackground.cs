@@ -100,6 +100,10 @@ namespace Renderer
             {
                 GL.Disable(EnableCap.DepthTest);
             }
+            GL.Enable(EnableCap.CullFace);
+            GL.CullFace(CullFaceMode.Front);
+            GL.Disable(EnableCap.DepthClamp);
+            GL.Enable(EnableCap.DebugOutput);
             Shader shader = shaderMgr.GetShader(BGData.BackgroundShaderIndex);
             if (shader == null) throw new Exception("background shader not initalised");
             shader.Use();
