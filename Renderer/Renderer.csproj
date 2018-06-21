@@ -52,6 +52,7 @@
     <Compile Include="EBO.cs" />
     <Compile Include="Material.cs" />
     <Compile Include="Matrix4Uniform.cs" />
+    <Compile Include="NewCamera.cs" />
     <Compile Include="RenderBackground.cs" />
     <Compile Include="Renderer.cs" />
     <Compile Include="RendererEnums.cs" />
