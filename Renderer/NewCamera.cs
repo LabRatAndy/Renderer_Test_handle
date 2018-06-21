@@ -2,7 +2,7 @@
 using System;
 namespace Renderer
 {
-    public class NewCamera
+    public class Camera
     {
         private Vector3 position = Vector3.Zero;
         private Vector3 oreientation = new Vector3((float)Math.PI, 0f, 0f);
@@ -26,14 +26,14 @@ namespace Renderer
             get { return mouseSenitivity; }
             set { mouseSenitivity = value; }
         }
-        public NewCamera()
+        public Camera()
         {
             position = Vector3.Zero;
             oreientation = new Vector3((float)Math.PI, 0.0f, 0.0f);
             moveSpeed = 0.2f;
             MouseSensitivity = 0.01f;
         }
-        public NewCamera(Vector3 position, Vector3 oreientation, float moveSpeed, float mouseSensitivity)
+        public Camera(Vector3 position, Vector3 oreientation, float moveSpeed, float mouseSensitivity)
         {
             this.position = position;
             this.oreientation = oreientation;
