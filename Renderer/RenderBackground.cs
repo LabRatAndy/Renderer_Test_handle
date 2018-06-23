@@ -105,7 +105,7 @@ namespace Renderer
             shader.Use();
             Uniform.Matrix4Uniform view = new Uniform.Matrix4Uniform("view");
             Uniform.Matrix4Uniform projection = new Uniform.Matrix4Uniform("projection");
-            view.Matrix = cameraMgr.GetActiveCamera().GetVeiwMatrix();
+            view.Matrix = cameraMgr.GetActiveCamera().GetViewMatrix();
             projection.Matrix = GetProjectionMatrix();
             view.Set(shader);
             projection.Set(shader);

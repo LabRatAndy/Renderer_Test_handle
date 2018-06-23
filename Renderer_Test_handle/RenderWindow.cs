@@ -49,7 +49,6 @@ namespace Program
         private int textureIndex;
         private int backgroundIndex;
         private Renderer.Camera camera = null;
-        private CameraMovementData cameraMovement;
         private Renderer.Renderer.BackGroundData backgroundData;
         private Vector2 LastMousePosition = new Vector2();
         internal RenderWindow() :base(800,640,GraphicsMode.Default,"Render Window",GameWindowFlags.Default,DisplayDevice.Default,3,0,GraphicsContextFlags.ForwardCompatible)
@@ -58,17 +57,6 @@ namespace Program
             Renderer.RendererSettings settings = new Renderer.RendererSettings();
             renderer.Settings = settings;
             OpenTK.Graphics.OpenGL.GL.Viewport(0, 0, 800, 640);
-            cameraMovement.flag = cameraMoveflag.None;
-            cameraMovement.CBackwardTicks = 0;
-            cameraMovement.CDownTicks = 0;
-            cameraMovement.CForwardTicks = 0;
-            cameraMovement.CleftTicks = 0;
-            cameraMovement.CPanLeft = 0;
-            cameraMovement.CPanRight = 0;
-            cameraMovement.CRightTicks = 0;
-            cameraMovement.CTiltDown = 0;
-            cameraMovement.CTiltUp = 0;
-            cameraMovement.CUpTicks = 0;
         }
         protected override void OnLoad(EventArgs e)
         {

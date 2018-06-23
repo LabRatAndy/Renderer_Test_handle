@@ -133,32 +133,6 @@ namespace Renderer
             cameraMgr.SetActiveCamera(index);
         }
         /// <summary>
-        /// Applies the mouse movement to the current active camera
-        /// </summary>
-        /// <param name="xDelta">the amount moved along x axis</param>
-        /// <param name="yDelta">the amount moved along y axis</param>
-        public void OnMouseMove(float xDelta,float yDelta)
-        {
-            cameraMgr.GetActiveCamera().ProcessMouseMovement(xDelta, yDelta, true);
-        }
-        /// <summary>
-        /// Appies the mouse wheel movement to the current active camera
-        /// </summary>
-        /// <param name="movementOffset">the amount of the mouse wheel moved</param>
-        public void OnMouseWheelMove(float movementOffset)
-        {
-            cameraMgr.GetActiveCamera().ProcessMouseScroll(movementOffset);
-        }
-        /// <summary>
-        /// Processess the camera movement made via keyboard
-        /// </summary>
-        /// <param name="movement">movement to make</param>
-        /// <param name="timeDelta">Time delta that the key was pressed for</param>
-        public void OnMoveCamera(CameraMovement movement,float timeDelta)
-        {
-            cameraMgr.GetActiveCamera().ProcessKeyboard(movement, timeDelta);
-        }
-        /// <summary>
         /// adds a texture for the renderer to be able to use 
         /// </summary>
         /// <param name="image">byte array containing image data</param>
@@ -367,7 +341,7 @@ namespace Renderer
             Uniform.Matrix4Uniform model = new Uniform.Matrix4Uniform("model");
             model.Matrix = modelTransform;
             Uniform.Matrix4Uniform view = new Uniform.Matrix4Uniform("view");
-            view.Matrix = cameraMgr.GetActiveCamera().GetVeiwMatrix();
+            view.Matrix = cameraMgr.GetActiveCamera().GetViewMatrix();
             Uniform.Matrix4Uniform projection = new Uniform.Matrix4Uniform("projection");
             projection.Matrix = GetProjectionMatrix();
             Shader shader = shaderMgr.GetShader(shaderIndex);
@@ -392,7 +366,7 @@ namespace Renderer
             Uniform.Matrix4Uniform model = new Uniform.Matrix4Uniform("model");
             model.Matrix = modelTransform;
             Uniform.Matrix4Uniform view = new Uniform.Matrix4Uniform("view");
-            view.Matrix = cameraMgr.GetActiveCamera().GetVeiwMatrix();
+            view.Matrix = cameraMgr.GetActiveCamera().GetViewMatrix();
             Uniform.Matrix4Uniform projection = new Uniform.Matrix4Uniform("projection");
             projection.Matrix = GetProjectionMatrix();
             Shader shader = shaderMgr.GetShader(shaderIndex);
