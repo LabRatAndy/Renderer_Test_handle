@@ -51,6 +51,7 @@ namespace Program
         private Renderer.Camera camera = null;
         private CameraMovementData cameraMovement;
         private Renderer.Renderer.BackGroundData backgroundData;
+        private Vector2 LastMousePosition = new Vector2();
         internal RenderWindow() :base(800,640,GraphicsMode.Default,"Render Window",GameWindowFlags.Default,DisplayDevice.Default,3,0,GraphicsContextFlags.ForwardCompatible)
         {
             renderer = new Renderer.Renderer();
@@ -74,7 +75,7 @@ namespace Program
             base.OnLoad(e);
             renderer.Settings.ScreenHeight = this.Height;
             renderer.Settings.ScreenWidth = this.Width;
-            camera = new Renderer.Camera(new Vector3(0.0f, 0.0f, -25.0f), new Vector3(0.0f, 1.0f, 0.0f));
+            camera = new Renderer.Camera();
             renderer.AddCamera(camera, "default");
             renderer.SetActiveCamera("default");
             //code for loading to be placed here set up and initialise the shaders
@@ -139,7 +140,12 @@ namespace Program
         {
             base.OnUpdateFrame(e);
             //any required logic to go here
-            ProcessCameraMovement();
+            if(Focused)
+            {
+                Vector2 delta = LastMousePosition - new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+                camera.Rotation(delta.X, delta.Y);
+                ResetCursor();
+            }
         }
         protected override void OnRenderFrame(FrameEventArgs e)
         {
@@ -152,111 +158,36 @@ namespace Program
         }
         protected override void OnKeyPress(OpenTK.KeyPressEventArgs e)
         {
-            if (e.KeyChar == 'q') Exit(); 
-        }
-        protected override void OnKeyDown(OpenTK.Input.KeyboardKeyEventArgs e)
-        {
-            base.OnKeyDown(e);
-            switch(e.Key)
+            if (e.KeyChar == 'x') Exit();
+            switch(e.KeyChar)
             {
-                case Key.W:
-                    cameraMovement.flag |= cameraMoveflag.CameraForward;
-                    cameraMovement.CForwardTicks = DateTime.Now.Ticks;
+                case 'w':
+                    camera.Move(0f, 0.1f, 0f);
                     break;
-                case Key.S:
-                    cameraMovement.flag |= cameraMoveflag.CameraBackward;
-                    cameraMovement.CBackwardTicks = DateTime.Now.Ticks;
+                case 'a':
+                    camera.Move(-0.1f, 0f, 0f);
                     break;
-                case Key.A:
-                    cameraMovement.flag |= cameraMoveflag.CameraLeft;
-                    cameraMovement.CleftTicks = DateTime.Now.Ticks;
-                    break; 
-                case Key.D:
-                    cameraMovement.flag |= cameraMoveflag.CameraRight;
-                    cameraMovement.CRightTicks = DateTime.Now.Ticks;
+                case 's':
+                    camera.Move(0f, -0.1f, 0f);
                     break;
-                case Key.Keypad8:
-                    cameraMovement.flag |= cameraMoveflag.CameraUp;
-                    cameraMovement.CUpTicks = DateTime.Now.Ticks;
+                case 'd':
+                    camera.Move(0.1f, 0f, 0f);
                     break;
-                case Key.Keypad2:
-                    cameraMovement.flag |= cameraMoveflag.CameraDown;
-                    cameraMovement.CDownTicks = DateTime.Now.Ticks;
+                case 'q':
+                    camera.Move(0f, 0f, 0.1f);
                     break;
-                case Key.Left:
-                    cameraMovement.flag |= cameraMoveflag.CameraPanLeft;
-                    cameraMovement.CPanLeft = DateTime.Now.Ticks;
-                    break;
-                case Key.Right:
-                    cameraMovement.flag |= cameraMoveflag.CameraPanRight;
-                    cameraMovement.CPanRight = DateTime.Now.Ticks;
-                    break;
-                case Key.Up:
-                    cameraMovement.flag |= cameraMoveflag.CameraTiltUP;
-                    cameraMovement.CTiltUp = DateTime.Now.Ticks;
-                    break;
-                case Key.Down:
-                    cameraMovement.flag |= cameraMoveflag.CameraTiltDown;
-                    cameraMovement.CTiltDown = DateTime.Now.Ticks;
+                case 'e':
+                    camera.Move(0f, 0f, -0.1f);
                     break;
             }
         }
-        protected override void OnKeyUp(OpenTK.Input.KeyboardKeyEventArgs e)
+        protected override void OnFocusedChanged(EventArgs e)
         {
-            base.OnKeyUp(e);
-            switch (e.Key)
+            base.OnFocusedChanged(e);
+            if(Focused)
             {
-                case Key.W:
-                    cameraMovement.flag &= ~cameraMoveflag.CameraForward;
-                    cameraMovement.CForwardTicks = 0;
-                    break;
-                case Key.S:
-                    cameraMovement.flag &= ~cameraMoveflag.CameraBackward;
-                    cameraMovement.CBackwardTicks = 0;
-                    break;
-                case Key.A:
-                    cameraMovement.flag &= ~cameraMoveflag.CameraLeft;
-                    cameraMovement.CleftTicks = 0;
-                    break;
-                case Key.D:
-                    cameraMovement.flag &= ~cameraMoveflag.CameraRight;
-                    cameraMovement.CRightTicks = 0;
-                    break;
-                case Key.Keypad8:
-                    cameraMovement.flag &= ~cameraMoveflag.CameraUp;
-                    cameraMovement.CUpTicks = 0;
-                    break;
-                case Key.Keypad2:
-                    cameraMovement.flag &= ~cameraMoveflag.CameraDown;
-                    cameraMovement.CDownTicks = 0;
-                    break;
-                case Key.Left:
-                    cameraMovement.flag &= ~cameraMoveflag.CameraPanLeft;
-                    cameraMovement.CPanLeft = 0;
-                    break;
-                case Key.Right:
-                    cameraMovement.flag &= ~cameraMoveflag.CameraPanRight;
-                    cameraMovement.CPanRight = 0;
-                    break;
-                case Key.Up:
-                    cameraMovement.flag &= ~cameraMoveflag.CameraTiltUP;
-                    cameraMovement.CTiltUp = 0;
-                    break;
-                case Key.Down:
-                    cameraMovement.flag &= ~cameraMoveflag.CameraTiltDown;
-                    cameraMovement.CTiltDown = 0;
-                    break;
+                ResetCursor();
             }
-        }
-        protected override void OnMouseMove(OpenTK.Input.MouseMoveEventArgs e)
-        {
-            base.OnMouseMove(e);
-            renderer.OnMouseMove((float)e.XDelta, (float)e.YDelta);
-        }
-        protected override void OnMouseWheel(OpenTK.Input.MouseWheelEventArgs e)
-        {
-            base.OnMouseWheel(e);
-            renderer.OnMouseWheelMove(e.DeltaPrecise);
         }
         private byte[] LoadTexture(string filename)
         {
@@ -332,67 +263,10 @@ namespace Program
             verticies[35] = new Renderer.Vertex(new Vector3(-0.5f, 0.5f, -0.5f), new Vector3(0.0f, 1.0f, 0.0f), new Vector2(0.0f, 1.0f));
             return verticies;
         }
-        private void ProcessCameraMovement()
+        private void ResetCursor()
         {
-            long now = DateTime.Now.Ticks;
-            if(cameraMovement.flag.HasFlag(cameraMoveflag.CameraBackward))
-            {
-                    renderer.OnMoveCamera(Renderer.CameraMovement.CameraBackward, GetTimeDelta(cameraMovement.CBackwardTicks,now));
-                    cameraMovement.CBackwardTicks = now;
-            }
-            if(cameraMovement.flag.HasFlag(cameraMoveflag.CameraDown))
-            {
-
-                    renderer.OnMoveCamera(Renderer.CameraMovement.CameraDown, GetTimeDelta(cameraMovement.CDownTicks,now));
-                    cameraMovement.CDownTicks = now;
-            }
-            if(cameraMovement.flag.HasFlag(cameraMoveflag.CameraForward))
-            {
-
-                    renderer.OnMoveCamera(Renderer.CameraMovement.CameraForward, GetTimeDelta(cameraMovement.CForwardTicks,now));
-                    cameraMovement.CForwardTicks = now;
-            }
-            if(cameraMovement.flag.HasFlag(cameraMoveflag.CameraLeft))
-            {
-                    renderer.OnMoveCamera(Renderer.CameraMovement.CameraLeft, GetTimeDelta(cameraMovement.CleftTicks,now));
-                    cameraMovement.CleftTicks = now;
-            }
-            if(cameraMovement.flag.HasFlag(cameraMoveflag.CameraPanLeft))
-            {
-                    renderer.OnMoveCamera(Renderer.CameraMovement.CameraPanLeft, GetTimeDelta(cameraMovement.CPanLeft,now));
-                    cameraMovement.CPanLeft = now;
-
-            }
-            if(cameraMovement.flag.HasFlag(cameraMoveflag.CameraPanRight))
-            {
-                    renderer.OnMoveCamera(Renderer.CameraMovement.CameraPanRight, GetTimeDelta(cameraMovement.CPanRight,now));
-                    cameraMovement.CPanRight = now;
-            }
-            if(cameraMovement.flag.HasFlag(cameraMoveflag.CameraRight))
-            {
-
-                    renderer.OnMoveCamera(Renderer.CameraMovement.CameraRight, GetTimeDelta(cameraMovement.CRightTicks,now));
-                    cameraMovement.CRightTicks = now;
-            }
-            if(cameraMovement.flag.HasFlag(cameraMoveflag.CameraTiltDown))
-            {
-                    renderer.OnMoveCamera(Renderer.CameraMovement.CameraTiltDown, GetTimeDelta(cameraMovement.CTiltDown, now));
-                    cameraMovement.CTiltDown = now;
-            }
-            if(cameraMovement.flag.HasFlag(cameraMoveflag.CameraTiltUP))
-            {
-                    renderer.OnMoveCamera(Renderer.CameraMovement.CameraTiltUp, GetTimeDelta(cameraMovement.CTiltUp, now));
-                    cameraMovement.CTiltUp = now;
-            }
-            if(cameraMovement.flag.HasFlag(cameraMoveflag.CameraUp))
-            {
-                    renderer.OnMoveCamera(Renderer.CameraMovement.CameraUp, GetTimeDelta(cameraMovement.CUpTicks, now));
-                    cameraMovement.CUpTicks = now;
-            }
-        }
-        private float GetTimeDelta(long startticks,long currentTicks)
-        {
-            return (float) (currentTicks-startticks) / 100000;
+            Mouse.SetPosition(Bounds.Left + Bounds.Width / 2, Bounds.Top + Bounds.Height / 2);
+            LastMousePosition = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
         }
     }
 }
