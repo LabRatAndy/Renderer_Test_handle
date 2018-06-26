@@ -69,9 +69,9 @@ namespace Renderer
             int pixelDataSize = image.Width * image.Height * 4;
             byte[] pixelData = new byte[pixelDataSize];
             int offset = 0;
-            for (int y = 0; y < image.Width; y++)
+            for (int x = 0; x < image.Width; x++)
             {
-                for (int x = 0; x < image.Height; x++)
+                for (int y = 0; y < image.Height; y++)
                 {
                     Color pixel = image.GetPixel(x, y);
                     pixelData[offset] = pixel.R;
