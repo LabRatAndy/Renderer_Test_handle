@@ -30,7 +30,7 @@ namespace Renderer
         {
             position = Vector3.Zero;
             oreientation = new Vector3((float)Math.PI, 0.0f, 0.0f);
-            moveSpeed = 0.2f;
+            moveSpeed = 2.0f;
             MouseSensitivity = 0.01f;
         }
         public Camera(Vector3 position, Vector3 oreientation, float moveSpeed, float mouseSensitivity)

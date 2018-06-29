@@ -140,8 +140,8 @@ namespace Program
             //add renerer calls to draw the objects
             renderer.BackgroundData = this.backgroundData;
             //renderer.RenderBackGround();
-            //renderer.RenderObject(testItem, testvao, shaderindex, Matrix4.Identity,textureIndex);
-            renderer.RenderObject();
+            renderer.RenderObject(testItem, testvao, shaderindex, Matrix4.Identity,textureIndex);
+            //renderer.RenderObject();
             SwapBuffers();
         }
         protected override void OnKeyPress(OpenTK.KeyPressEventArgs e)
