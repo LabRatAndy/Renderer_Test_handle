@@ -137,6 +137,7 @@ namespace Renderer
             for (n = 0; n < shaderList.Count; n++)
             {
                 if (shaderList[n].ShaderName == name) break;
+                if (n == shaderList.Count) return false;
             }
             if (shaderList[n].IsInitialised) return true;
             return shaderList[n].TheShader.InitialiseShader();

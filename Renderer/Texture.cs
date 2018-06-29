@@ -58,6 +58,7 @@ namespace Renderer
                 GL.TexImage2D(side, 0, PixelInternalFormat.Rgba, immage.Width, immage.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, LoadTexture(immage));
             }
             else throw new Exception("Side is not a valid texture target enum for a cube map");
+            GL.GenerateMipmap(GenerateMipmapTarget.TextureCubeMap);
             GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, new int[] { (int)TextureMagFilter.Linear });
             GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, new int[] { (int)TextureMinFilter.Linear });
             GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR, new int[] { (int)TextureParameterName.ClampToEdge });
