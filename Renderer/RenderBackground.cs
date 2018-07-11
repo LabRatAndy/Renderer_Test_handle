@@ -104,6 +104,7 @@ namespace Renderer
             {
                 GL.Disable(EnableCap.DepthTest);
             }
+            GL.DepthFunc(DepthFunction.Lequal);
             Shader shader = shaderMgr.GetShader(BGData.BackgroundShaderIndex);
             if (shader == null) throw new Exception("background shader not initalised");
             shader.Use();
@@ -118,7 +119,8 @@ namespace Renderer
             //textureMgr.GetTexture(BGData.BackgroundTextureIndex).BindTexture();
             //textureMgr.GetTexture(BGData.BackgroundTextureIndex).ActivateTexture(TextureUnit.Texture0, shader, "skyboxtexture", 0);
             GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
-            GL.BindVertexArray(0);            
+            GL.BindVertexArray(0);
+            GL.DepthFunc(DepthFunction.Less);            
             GL.Enable(EnableCap.DepthTest);
             depthteston = true;
         }
