@@ -74,7 +74,7 @@ namespace Program
             base.OnLoad(e);
             renderer.Settings.ScreenHeight = this.Height;
             renderer.Settings.ScreenWidth = this.Width;
-            camera = new Renderer.Camera(new Vector3(0.0f, 0.0f, -25.0f), new Vector3(0.0f, 1.0f, 0.0f));
+            camera = new Renderer.Camera(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 1.0f, 0.0f));
             renderer.AddCamera(camera, "default");
             renderer.SetActiveCamera("default");
             //code for loading to be placed here set up and initialise the shaders

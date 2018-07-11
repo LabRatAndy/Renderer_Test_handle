@@ -166,13 +166,13 @@ namespace Renderer
                 data = null;
                 texture.Dispose();
                 images.Dispose();
-                GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, new int[] { (int)TextureMagFilter.Linear });
-                GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, new int[] { (int)TextureMinFilter.Linear });
-                GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS, new int[] { (int)TextureWrapingMode.ClampToEdge });
-                GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapT, new int[] { (int)TextureWrapingMode.ClampToEdge });
-                GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR, new int[] { (int)TextureWrapingMode.ClampToEdge });
-                GL.BindTexture(TextureTarget.TextureCubeMap, 0);
             }
+            GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, new int[] { (int)TextureMagFilter.Linear });
+            GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, new int[] { (int)TextureMinFilter.Linear });
+            GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS, new int[] { (int)TextureWrapingMode.ClampToEdge });
+            GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapT, new int[] { (int)TextureWrapingMode.ClampToEdge });
+            GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR, new int[] { (int)TextureWrapingMode.ClampToEdge });
+            GL.BindTexture(TextureTarget.TextureCubeMap, 0);
         }
         private void BackgroundFog(Shader shader)
         {
