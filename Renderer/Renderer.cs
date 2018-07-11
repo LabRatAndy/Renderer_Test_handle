@@ -281,6 +281,51 @@ namespace Renderer
             textureMgr.RemoveTextureUnit(name);
         }
         /// <summary>
+        /// Initialises a texture as a skybox cubemap
+        /// </summary>
+        /// <param name="name">The name of the skybox texture</param>
+        /// <returns>The index of the texture</returns>
+        public int CreateSkyBox(string name)
+        {
+            Texture skyBox = new Texture();
+            return textureMgr.AddTexture(skyBox, name);
+        }
+        /// <summary>
+        /// Adds a texture to the skybox cubemap texture
+        /// </summary>
+        /// <param name="side">The side of the cubemap the image represents </param>
+        /// <param name="textureFileName"> the filename of the texture</param>
+        /// <param name="textureIndex">the index of the cubemap skybox texture retruned by createskybox</param>
+        public void AddSkyBoxTexture(SkyBoxTextureSide side, string textureFileName, int textureIndex)
+        {
+            Texture skyBox = textureMgr.GetTexture(textureIndex);
+            Image image = Image.FromFile(textureFileName);
+            Bitmap data = new Bitmap(image);
+            switch (side)
+            {
+                case SkyBoxTextureSide.Back:
+                    skyBox.LoadCubeMapSide(data, TextureTarget.TextureCubeMapPositiveZ);
+                    break;
+                case SkyBoxTextureSide.Bottom:
+                    skyBox.LoadCubeMapSide(data, TextureTarget.TextureCubeMapNegativeY);
+                    break;
+                case SkyBoxTextureSide.Front:
+                    skyBox.LoadCubeMapSide(data, TextureTarget.TextureCubeMapNegativeZ);
+                    break;
+                case SkyBoxTextureSide.Left:
+                    skyBox.LoadCubeMapSide(data, TextureTarget.TextureCubeMapNegativeX);
+                    break;
+                case SkyBoxTextureSide.Right:
+                    skyBox.LoadCubeMapSide(data, TextureTarget.TextureCubeMapPositiveX);
+                    break;
+                case SkyBoxTextureSide.Top:
+                    skyBox.LoadCubeMapSide(data, TextureTarget.TextureCubeMapPositiveY);
+                    break;
+            }
+            data.Dispose();
+            image.Dispose();
+        }
+        /// <summary>
         /// Gets and Sets the settings for the renderer. Note: they only take effect at start of next render iteration
         /// unless ApplySettingsNow is called
         /// </summary>

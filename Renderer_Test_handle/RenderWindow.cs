@@ -51,7 +51,7 @@ namespace Program
         private Renderer.Camera camera = null;
         private CameraMovementData cameraMovement;
         private Renderer.Renderer.BackGroundData backgroundData;
-        internal RenderWindow() :base(800,640,GraphicsMode.Default,"Render Window",GameWindowFlags.Default,DisplayDevice.Default,3,0,GraphicsContextFlags.ForwardCompatible)
+        internal RenderWindow() :base(800,640,GraphicsMode.Default,"Render Window",GameWindowFlags.Default,DisplayDevice.Default,3,3,GraphicsContextFlags.Default)
         {
             renderer = new Renderer.Renderer();
             Renderer.RendererSettings settings = new Renderer.RendererSettings();
@@ -74,7 +74,7 @@ namespace Program
             base.OnLoad(e);
             renderer.Settings.ScreenHeight = this.Height;
             renderer.Settings.ScreenWidth = this.Width;
-            camera = new Renderer.Camera(new Vector3(0.0f, 0.0f, -25.0f), new Vector3(0.0f, 1.0f, 0.0f));
+            camera = new Renderer.Camera(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 1.0f, 0.0f));
             renderer.AddCamera(camera, "default");
             renderer.SetActiveCamera("default");
             //code for loading to be placed here set up and initialise the shaders
@@ -88,19 +88,9 @@ namespace Program
                 this.Exit();
                 return;
             }
-            vertex = System.IO.Directory.GetCurrentDirectory() + @"\Background.vert";
-            fragment = System.IO.Directory.GetCurrentDirectory() + @"\BackgroundNoFog.frag";
-            shaderindex = renderer.AddShader(vertex, fragment, "BackgroundNoFog", true);
-            if (shaderindex == -1)
-            {
-                //shader compile error
-                MessageBox.Show("Error loading shader. Program will Close", "Load Error!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.Exit();
-                return;
-            }
-            vertex = System.IO.Directory.GetCurrentDirectory() + @"\Background.vert";
-            fragment = System.IO.Directory.GetCurrentDirectory() + @"\BackgroundFog.frag";
-            shaderindex = renderer.AddShader(vertex, fragment, "BackgroundFog", true);
+            vertex = System.IO.Directory.GetCurrentDirectory() + @"\SkyBox.vert";
+            fragment = System.IO.Directory.GetCurrentDirectory() + @"\SkyBox.frag";
+            shaderindex = renderer.AddShader(vertex, fragment, "SkyBox", true);
             if (shaderindex == -1)
             {
                 //shader compile error
@@ -119,8 +109,17 @@ namespace Program
             renderer.CreateBufferObjects(vertices, shaderindex, out testItem, out testvao, attribute);
             string textureFile = System.IO.Directory.GetCurrentDirectory() + @"\brick2.png";
             textureIndex = renderer.AddTexture(textureFile, "texture1");
-            textureFile = System.IO.Directory.GetCurrentDirectory() + @"\background.png";    
-            backgroundData.BackgroundTextureIndex = renderer.AddTexture(textureFile, "background");
+            textureFile = System.IO.Directory.GetCurrentDirectory() + @"\brick2.png";
+            string[] skyboxtextureFiles = new string[] { "top.png", "bottom.png", "left.png", "right.png", "front.png", "back.png" };
+            renderer.SetSkyBoxTexture(skyboxtextureFiles);
+            /*textureIndex = renderer.CreateSkyBox("background");
+            renderer.AddSkyBoxTexture(Renderer.SkyBoxTextureSide.Back, textureFile, textureIndex);
+            renderer.AddSkyBoxTexture(Renderer.SkyBoxTextureSide.Bottom, textureFile, textureIndex);
+            renderer.AddSkyBoxTexture(Renderer.SkyBoxTextureSide.Front, textureFile, textureIndex);
+            renderer.AddSkyBoxTexture(Renderer.SkyBoxTextureSide.Left, textureFile, textureIndex);
+            renderer.AddSkyBoxTexture(Renderer.SkyBoxTextureSide.Right, textureFile, textureIndex);
+            renderer.AddSkyBoxTexture(Renderer.SkyBoxTextureSide.Top, textureFile, textureIndex);*/
+            backgroundData.BackgroundTextureIndex = textureIndex;
             backgroundData.ImageHeight = 512;
             backgroundData.ImageWidth = 1024;
             backgroundData.KeepAspectRatio = true;
@@ -131,6 +130,7 @@ namespace Program
             backgroundData.FogRed = 155;
             backgroundData.FogGreen = 155;
             backgroundData.FogBlue = 155;
+            backgroundData.BackgroundShaderIndex = shaderindex;
         }
         protected override void OnResize(EventArgs e)
         {
@@ -147,9 +147,12 @@ namespace Program
         {
             //add renerer calls to draw the objects
             renderer.BackgroundData = this.backgroundData;
+            OpenTK.Graphics.OpenGL.GL.ClearColor(Color.White);
+            OpenTK.Graphics.OpenGL.GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit|OpenTK.Graphics.OpenGL.ClearBufferMask.DepthBufferBit);
             renderer.RenderBackGround();
-            //renderer.RenderObject(testItem, testvao, shaderindex, Matrix4.Identity,textureIndex);
+            renderer.RenderObject(testItem, testvao, shaderindex, Matrix4.Identity, 0);
             //renderer.RenderObject();
+            OpenTK.Graphics.OpenGL.GL.Flush();
             SwapBuffers();
         }
         protected override void OnKeyPress(OpenTK.KeyPressEventArgs e)
