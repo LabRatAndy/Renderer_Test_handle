@@ -2,6 +2,7 @@
 using OpenTK;
 using Renderer.BufferObjects;
 using System;
+using System.Drawing;
 
 namespace Renderer
 {
@@ -12,6 +13,9 @@ namespace Renderer
         private VertexArrayObject<Vertex> BGvao = null;
         private ElementBufferObject BGSideWallebo = null;
         private ElementBufferObject BGCapsebo = null;
+        private int skyboxVBO;
+        private int skyboxVAO;
+        private int skyboxTexture;
         public struct BackGroundData
         {
             int imagewidth;
@@ -95,15 +99,11 @@ namespace Renderer
         }
         public void RenderBackGround()
         {
-            if (BGvbo == null) CreateSkyBox();
+            if (skyboxVBO == 0) CreateSkyBox();
             if(depthteston)
             {
                 GL.Disable(EnableCap.DepthTest);
             }
-            GL.Enable(EnableCap.CullFace);
-            GL.CullFace(CullFaceMode.Front);
-            GL.Disable(EnableCap.DepthClamp);
-            GL.Enable(EnableCap.DebugOutput);
             Shader shader = shaderMgr.GetShader(BGData.BackgroundShaderIndex);
             if (shader == null) throw new Exception("background shader not initalised");
             shader.Use();
@@ -113,16 +113,66 @@ namespace Renderer
             projection.Matrix = GetProjectionMatrix();
             view.Set(shader);
             projection.Set(shader);
-            GL.ActiveTexture(TextureUnit.Texture0);
-            textureMgr.GetTexture(BGData.BackgroundTextureIndex).BindTexture();
-            textureMgr.GetTexture(BGData.BackgroundTextureIndex).ActivateTexture(TextureUnit.Texture0, shader, "skyboxtexture", 0);
-            BGvao.Bind();
-            BGvbo.BindBuffer();
-            BGvbo.Draw(PrimitiveType.Triangles);
-            BGvbo.UnBind();
-            BGvao.UnBind();
+            GL.BindVertexArray(skyboxVAO);
+            GL.BindTexture(TextureTarget.TextureCubeMap, skyboxTexture);
+            //textureMgr.GetTexture(BGData.BackgroundTextureIndex).BindTexture();
+            //textureMgr.GetTexture(BGData.BackgroundTextureIndex).ActivateTexture(TextureUnit.Texture0, shader, "skyboxtexture", 0);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+            GL.BindVertexArray(0);            
             GL.Enable(EnableCap.DepthTest);
             depthteston = true;
+        }
+        public void SetSkyBoxTexture(string[] filename)
+        {
+            //filenames must be top, bottom, left,right,front,back
+            GL.GenTextures(1, out skyboxTexture);
+            GL.BindTexture(TextureTarget.TextureCubeMap, skyboxTexture);
+            Image images;
+            Bitmap texture;
+            for (int n = 0; n !=6; n++)
+            {
+                images = Image.FromFile(filename[n]);
+                texture = new Bitmap(images);
+                System.Drawing.Imaging.BitmapData data = texture.LockBits(new Rectangle(0, 0, texture.Width, texture.Height), 
+                    System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+                switch(n)
+                {
+                    case 0://top
+                        GL.TexImage2D(TextureTarget.TextureCubeMapPositiveY, 0, PixelInternalFormat.Rgb, data.Width, data.Height, 0, 
+                            PixelFormat.Rgb, PixelType.UnsignedByte, data.Scan0);
+                        break;
+                    case 1://bottom
+                        GL.TexImage2D(TextureTarget.TextureCubeMapNegativeY, 0, PixelInternalFormat.Rgb, data.Width, data.Height, 0, 
+                            PixelFormat.Rgb, PixelType.UnsignedByte, data.Scan0);
+                        break;
+                    case 2:// left
+                        GL.TexImage2D(TextureTarget.TextureCubeMapNegativeX, 0, PixelInternalFormat.Rgb, data.Width, data.Height, 0,
+                            PixelFormat.Rgb, PixelType.UnsignedByte, data.Scan0);
+                        break;
+                    case 3://right
+                        GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX, 0, PixelInternalFormat.Rgb, data.Width, data.Height, 0,
+                            PixelFormat.Rgb, PixelType.UnsignedByte, data.Scan0);
+                        break;
+                    case 4://front
+                        GL.TexImage2D(TextureTarget.TextureCubeMapPositiveZ, 0, PixelInternalFormat.Rgb, data.Width, data.Height, 0,
+                            PixelFormat.Rgb, PixelType.UnsignedByte, data.Scan0);
+                        break;
+                    case 5://back
+                        GL.TexImage2D(TextureTarget.TextureCubeMapNegativeZ, 0, PixelInternalFormat.Rgb, data.Width, data.Height, 0,
+                            PixelFormat.Rgb, PixelType.UnsignedByte, data.Scan0);
+                        break;
+                }
+                texture.UnlockBits(data);
+                data = null;
+                texture.Dispose();
+                images.Dispose();
+                GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureMagFilter, new int[] { (int)TextureMagFilter.Linear });
+                GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureMinFilter, new int[] { (int)TextureMinFilter.Linear });
+                GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapS, new int[] { (int)TextureWrapingMode.ClampToEdge });
+                GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapT, new int[] { (int)TextureWrapingMode.ClampToEdge });
+                GL.TexParameterI(TextureTarget.TextureCubeMap, TextureParameterName.TextureWrapR, new int[] { (int)TextureWrapingMode.ClampToEdge });
+                GL.BindTexture(TextureTarget.TextureCubeMap, 0);
+            }
         }
         private void BackgroundFog(Shader shader)
         {
@@ -337,8 +387,8 @@ namespace Renderer
         /// </summary>
         private void CreateSkyBox()
         {
-            Vertex[] vertices = new Vertex[36];
             #region
+            /*Vertex[] vertices = new Vertex[36];
             vertices[0] = new Vertex(new Vector3(-10.0f, 10.0f, -10.0f));
             vertices[1] = new Vertex(new Vector3(-10.0f, -10.0f, -10.0f));
             vertices[2] = new Vertex(new Vector3(10.0f, -10.0f, -10.0f));
@@ -380,7 +430,6 @@ namespace Renderer
             vertices[33] = new Vertex(new Vector3(10.0f, -10.0f, -10.0f));
             vertices[34] = new Vertex(new Vector3(-10.0f, -10.0f, 10.0f));
             vertices[35] = new Vertex(new Vector3(10.0f, -10.0f, 10.0f));
-            #endregion
             BufferObjects.VertexAttribute[] attribute = new VertexAttribute[3];
             attribute[0] = new VertexAttribute("position", 3, OpenTK.Graphics.OpenGL.VertexAttribPointerType.Float, Vertex.Size, 0);
             attribute[1] = new VertexAttribute("normal", 3, OpenTK.Graphics.OpenGL.VertexAttribPointerType.Float, Vertex.Size, Vector3.SizeInBytes);
@@ -390,7 +439,58 @@ namespace Renderer
             BGvbo.CreateBuffer(BufferUsageHint.StaticDraw);
             BGvao.SetAttributes(BGvbo, shaderMgr.GetShader("SkyBox"), attribute);
             BGvao.UnBind();
-            BGvbo.UnBind();
+            BGvbo.UnBind();*/
+            #endregion
+            float[] vertices = new float[]
+            {
+                -1.0f,  1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
+
+                -1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f, -1.0f,
+                1.0f,  1.0f,  1.0f,
+                1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f, -1.0f,
+
+                -1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                1.0f, -1.0f, -1.0f,
+                1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                1.0f, -1.0f, 1.0f
+            };
+            GL.GenVertexArrays(1, out skyboxVAO);
+            GL.GenBuffers(1, out skyboxVBO);
+            GL.BindVertexArray(skyboxVAO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, skyboxVBO);
+            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
+            GL.EnableVertexAttribArray(0);
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3, 0);
+            GL.BindVertexArray(0);
+
         }
     }
 }
